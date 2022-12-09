@@ -42,7 +42,7 @@ public class BlobController {
     @GetMapping("/demo")
     public String getValue(){
         BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
-                .endpoint("https://secondtried.blob.core.windows.net")
+                .endpoint("https://secondtried.blob.core.windows.net/")
                 .credential(new ManagedIdentityCredentialBuilder().build()) // Or use DefaultAzureCredentialBuilder
                 .buildClient();
         BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient("sample-webapp");
