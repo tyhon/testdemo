@@ -102,11 +102,12 @@ public class BlobController {
 //
     @DeleteMapping("/delete/{id}")
     public String deleteDelegate(@PathVariable("id") Integer id) throws IOException{
-//        BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
-//        BlobClient blobClient = containerClient.getBlobClient("delegate.json");
-        try (OutputStream os = ((WritableResource) this.blobFile).getOutputStream()) {
-            BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
+        BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
         BlobClient blobClient = containerClient.getBlobClient("delegate.json");
+
+        try (OutputStream os = ((WritableResource) blobClient).getOutputStream()) {
+//            BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
+//        BlobClient blobClient = containerClient.getBlobClient("delegate.json");
             InputStream inputStream = blobClient.openInputStream();
             String result = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
             ObjectMapper mapper = new ObjectMapper();
