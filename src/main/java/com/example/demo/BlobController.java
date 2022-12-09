@@ -28,16 +28,20 @@ public class BlobController {
 //    String fileName = "delegate.json";
 //    String container = "sample-webapp";
 
-    public void createBlobStorageClient(){
+//    public void createBlobStorageClient(){
+//        BlobServiceClient blobStorageClient = new BlobServiceClientBuilder()
+//                .endpoint("https://secondtried.blob.core.windows.net/")
+//                .credential(new DefaultAzureCredentialBuilder().build())
+//                .buildClient();
+//    }
+
+    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getDelegateList() throws IOException {
         BlobServiceClient blobStorageClient = new BlobServiceClientBuilder()
                 .endpoint("https://secondtried.blob.core.windows.net/")
                 .credential(new DefaultAzureCredentialBuilder().build())
                 .buildClient();
-    }
 
-    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getDelegateList() throws IOException {
-        createBlobStorageClient();
         return StreamUtils.copyToString(
                 this.blobFile.getInputStream(),
                 Charset.forName("UTF-8"));
