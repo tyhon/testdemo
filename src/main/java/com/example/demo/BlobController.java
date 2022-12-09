@@ -60,7 +60,7 @@ public class BlobController {
 //                .buildClient();
         BlobServiceClient blobStorageClient = new BlobServiceClientBuilder()
                 .endpoint("https://secondtried.blob.core.windows.net")
-                .credential(new DefaultAzureCredentialBuilder().build())
+                .credential(new ManagedIdentityCredentialBuilder().build())
                 .buildClient();
         BlobClient blobClient = blobStorageClient.getBlobContainerClient("sample-webapp").getBlobClient("delegate.json");
         Resource blobFile = ((Resource) blobClient);
