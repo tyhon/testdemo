@@ -14,6 +14,7 @@ import com.azure.storage.blob.BlobServiceClientBuilder;
 //import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.core.io.Resource;
 //import org.springframework.core.io.WritableResource;
+import com.azure.storage.blob.specialized.BlobOutputStream;
 import com.azure.storage.blob.specialized.BlockBlobClient;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -112,7 +113,7 @@ public class BlobController {
         BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
         BlobClient blobClient = containerClient.getBlobClient("delegate.json");
 
-        try (OutputStream os = ((WritableResource) blobClient).getOutputStream()) {
+        try (BlobOutputStream blobOS = blobClient.getBlockBlobClient().getBlobOutputStream()) {
 //            BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
 //        BlobClient blobClient = containerClient.getBlobClient("delegate.json");
             InputStream inputStream = blobClient.openInputStream();
@@ -125,11 +126,11 @@ public class BlobController {
             if (allIds.contains(id)) {
                 delegateList.removeIf(delegate -> delegate.getId().equals(id));
                 String jsonString = mapper.writeValueAsString(delegateList);
-                os.write(jsonString.getBytes());
+                blobOS.write(jsonString.getBytes());
                 return "delete successfully";
             } else {
                 String jsonString = mapper.writeValueAsString(delegateList);
-                os.write(jsonString.getBytes());
+                blobOS.write(jsonString.getBytes());
                 return "this id does not exist";
             }
         }
