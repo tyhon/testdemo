@@ -13,6 +13,11 @@ import com.azure.storage.blob.BlobServiceClientBuilder;
 //import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.core.io.Resource;
 //import org.springframework.core.io.WritableResource;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.WritableResource;
 import org.springframework.http.MediaType;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +26,11 @@ import java.io.IOException;
 import java.io.InputStream;
 //import java.io.InputStreamReader;
 //import java.io.OutputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 //import java.util.ArrayList;
 //import java.util.List;
 //import java.util.stream.Collectors;
@@ -30,12 +39,12 @@ import java.nio.charset.Charset;
 @RequestMapping("blob")
 public class BlobController {
 
-//    @Value("azure-blob://sample-webapp/delegate.json")
-//    private Resource blobFile;
+    @Value("azure-blob://sample-webapp/delegate.json")
+    private Resource blobFile;
 
     private BlobServiceClient createBlobStorageClient(){
         BlobServiceClient blobStorageClient = new BlobServiceClientBuilder()
-                .endpoint("https://demostrcl.blob.core.windows.net/")
+                .endpoint("https://secondtried.blob.core.windows.net/")
                 .credential(new ManagedIdentityCredentialBuilder().build())
                 .buildClient();
         return blobStorageClient;
@@ -67,7 +76,6 @@ public class BlobController {
 //        BlobClient blobClient = blobStorageClient.getBlobContainerClient("sample-webapp").getBlobClient("delegate.json");
         BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
         BlobClient blobClient = containerClient.getBlobClient("delegate.json");
-        System.out.println(blobClient.getBlockBlobClient().toString());
         InputStream inputStream = blobClient.openInputStream();
 //        InputStreamReader inr = new InputStreamReader(inputStream, "UTF-8");
 //        Resource blobFile = ((Resource) blobClient);
@@ -92,24 +100,29 @@ public class BlobController {
 //        return "file was updated";
 //    }
 //
-//    @DeleteMapping("/delete/{id}")
-//    public String deleteDelegate(@PathVariable("id") Integer id) throws IOException{
-//        try (OutputStream os = ((WritableResource) this.blobFile).getOutputStream()) {
-//            String result = StreamUtils.copyToString(this.blobFile.getInputStream(), Charset.forName("UTF-8"));
-//            ObjectMapper mapper = new ObjectMapper();
-//            List<Delegate> delegateList = new ArrayList<>();
-//            delegateList = mapper.readValue(result, new TypeReference<List<Delegate>>() {});
-//            List<Integer> allIds = delegateList.stream().map(delegate -> delegate.getId()).collect(Collectors.toList());
-//            if (allIds.contains(id)) {
-//                delegateList.removeIf(delegate -> delegate.getId().equals(id));
-//                String jsonString = mapper.writeValueAsString(delegateList);
-//                os.write(jsonString.getBytes());
-//                return "delete successfully";
-//            } else {
-//                String jsonString = mapper.writeValueAsString(delegateList);
-//                os.write(jsonString.getBytes());
-//                return "this id does not exist";
-//            }
-//        }
-//    }
+    @DeleteMapping("/delete/{id}")
+    public String deleteDelegate(@PathVariable("id") Integer id) throws IOException{
+//        BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
+//        BlobClient blobClient = containerClient.getBlobClient("delegate.json");
+        try (OutputStream os = ((WritableResource) this.blobFile).getOutputStream()) {
+            BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
+        BlobClient blobClient = containerClient.getBlobClient("delegate.json");
+            InputStream inputStream = blobClient.openInputStream();
+            String result = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
+            ObjectMapper mapper = new ObjectMapper();
+            List<Delegate> delegateList = new ArrayList<>();
+            delegateList = mapper.readValue(result, new TypeReference<List<Delegate>>() {});
+            List<Integer> allIds = delegateList.stream().map(delegate -> delegate.getId()).collect(Collectors.toList());
+            if (allIds.contains(id)) {
+                delegateList.removeIf(delegate -> delegate.getId().equals(id));
+                String jsonString = mapper.writeValueAsString(delegateList);
+                os.write(jsonString.getBytes());
+                return "delete successfully";
+            } else {
+                String jsonString = mapper.writeValueAsString(delegateList);
+                os.write(jsonString.getBytes());
+                return "this id does not exist";
+            }
+        }
+    }
 }
