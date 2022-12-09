@@ -35,20 +35,21 @@ public class BlobController {
 //    String fileName = "delegate.json";
 //    String container = "sample-webapp";
 
-//    public void createBlobStorageClient(){
-//        BlobServiceClient blobStorageClient = new BlobServiceClientBuilder()
-//                .endpoint("https://secondtried.blob.core.windows.net/")
-//                .credential(new DefaultAzureCredentialBuilder().build())
-//                .buildClient();
-//    }
+    private BlobServiceClient createBlobStorageClient(){
+        BlobServiceClient blobStorageClient = new BlobServiceClientBuilder()
+                .endpoint("https://secondtried.blob.core.windows.net/")
+                .credential(new ManagedIdentityCredentialBuilder().build())
+                .buildClient();
+        return blobStorageClient;
+    }
 
     @GetMapping("/demo")
     public String getValue(){
-        BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
-                .endpoint("https://secondtried.blob.core.windows.net/")
-                .credential(new ManagedIdentityCredentialBuilder().build()) // Or use DefaultAzureCredentialBuilder
-                .buildClient();
-        BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient("sample-webapp");
+//        BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
+//                .endpoint("https://secondtried.blob.core.windows.net/")
+//                .credential(new ManagedIdentityCredentialBuilder().build()) // Or use DefaultAzureCredentialBuilder
+//                .buildClient();
+        BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
         BlobClient blobClient = containerClient.getBlobClient("delegate.json");
         return blobClient.toString();
     }
@@ -61,11 +62,13 @@ public class BlobController {
 //                .endpoint("https://secondtried.blob.core.windows.net/")
 //                .credential(managedIdentityCredential)
 //                .buildClient();
-        BlobServiceClient blobStorageClient = new BlobServiceClientBuilder()
+        BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
                 .endpoint("https://secondtried.blob.core.windows.net/")
                 .credential(new ManagedIdentityCredentialBuilder().build())
                 .buildClient();
-        BlobClient blobClient = blobStorageClient.getBlobContainerClient("sample-webapp").getBlobClient("delegate.json");
+//        BlobClient blobClient = blobStorageClient.getBlobContainerClient("sample-webapp").getBlobClient("delegate.json");
+        BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
+        BlobClient blobClient = containerClient.getBlobClient("delegate.json");
         InputStream inputStream = blobClient.openInputStream();
 //        InputStreamReader inr = new InputStreamReader(inputStream, "UTF-8");
 //        Resource blobFile = ((Resource) blobClient);
