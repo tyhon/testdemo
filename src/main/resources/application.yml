@@ -4,5 +4,5 @@ spring:
       storage:
         blob:
           account-name: readstdemo
-          account-key: We26MbpVw3SLgUV4ao7Z8BQk84XFeQO6NrvgGhz0RmiNQXlyztk37mFITf0rJpOG8RxsLs3ilbzA+AStPx7CKw==
-          endpoint: https://readstdemo.blob.core.windows.net/
+          account-key: M+86f+zNPXabBp358bsyGuVDbEYMe2QrB4WKF/54wI68G3XrqwENHT6CuXXGx/zmj9iRDWRYjmgS+AStPdtW8g==
+          endpoint: https://secondtried.blob.core.windows.net/
