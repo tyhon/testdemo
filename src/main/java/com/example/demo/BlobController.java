@@ -9,6 +9,7 @@ import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
@@ -17,6 +18,8 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -59,15 +62,15 @@ public class BlobController {
 //                .credential(managedIdentityCredential)
 //                .buildClient();
         BlobServiceClient blobStorageClient = new BlobServiceClientBuilder()
-                .endpoint("https://secondtried.blob.core.windows.net")
+                .endpoint("https://secondtried.blob.core.windows.net/")
                 .credential(new ManagedIdentityCredentialBuilder().build())
                 .buildClient();
         BlobClient blobClient = blobStorageClient.getBlobContainerClient("sample-webapp").getBlobClient("delegate.json");
-        Resource blobFile = ((Resource) blobClient);
+        InputStream inputStream = blobClient.openInputStream();
+//        InputStreamReader inr = new InputStreamReader(inputStream, "UTF-8");
+//        Resource blobFile = ((Resource) blobClient);
 
-        return StreamUtils.copyToString(
-                blobFile.getInputStream(),
-                Charset.forName("UTF-8"));
+        return StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
     }
 
 //    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
