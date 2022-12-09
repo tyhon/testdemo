@@ -1,6 +1,8 @@
 package com.example.demo;
 
 import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.azure.identity.ManagedIdentityCredential;
+import com.azure.identity.ManagedIdentityCredentialBuilder;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -37,9 +39,11 @@ public class BlobController {
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public String getDelegateList() throws IOException {
+        ManagedIdentityCredential managedIdentityCredential = new ManagedIdentityCredentialBuilder()
+                .clientId("1ac684a9-00fa-4776-b124-28dcbdc3250c").build();
         BlobServiceClient blobStorageClient = new BlobServiceClientBuilder()
                 .endpoint("https://secondtried.blob.core.windows.net/")
-                .credential(new DefaultAzureCredentialBuilder().build())
+                .credential(managedIdentityCredential)
                 .buildClient();
 
         return StreamUtils.copyToString(
