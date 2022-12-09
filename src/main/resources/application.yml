@@ -1,7 +1,7 @@
-spring:
-  cloud:
-    azure:
-      storage:
-        blob:
-          account-name: secondtried
-          endpoint: https://secondtried.blob.core.windows.net/
+#spring:
+#  cloud:
+#    azure:
+#      storage:
+#        blob:
+#          account-name: secondtried
+#          endpoint: https://secondtried.blob.core.windows.net/
