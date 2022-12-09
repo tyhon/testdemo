@@ -52,6 +52,7 @@ public class BlobController {
         BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
         BlobClient blobClient = containerClient.getBlobClient("delegate.json");
         InputStream inputStream = blobClient.openInputStream();
+        System.out.println(blobClient.getBlockBlobClient().toString());
         return StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
     }
 
@@ -70,6 +71,7 @@ public class BlobController {
 //        BlobClient blobClient = blobStorageClient.getBlobContainerClient("sample-webapp").getBlobClient("delegate.json");
         BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
         BlobClient blobClient = containerClient.getBlobClient("delegate.json");
+        System.out.println(blobClient.getBlockBlobClient().toString());
         InputStream inputStream = blobClient.openInputStream();
 //        InputStreamReader inr = new InputStreamReader(inputStream, "UTF-8");
 //        Resource blobFile = ((Resource) blobClient);
