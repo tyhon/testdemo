@@ -7,24 +7,24 @@ import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.WritableResource;
+//import com.fasterxml.jackson.core.type.TypeReference;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+//import org.apache.tomcat.util.http.fileupload.IOUtils;
+//import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.core.io.Resource;
+//import org.springframework.core.io.WritableResource;
 import org.springframework.http.MediaType;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+//import java.io.InputStreamReader;
+//import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+//import java.util.ArrayList;
+//import java.util.List;
+//import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("blob")
@@ -32,8 +32,7 @@ public class BlobController {
 
 //    @Value("azure-blob://sample-webapp/delegate.json")
 //    private Resource blobFile;
-//    String fileName = "delegate.json";
-//    String container = "sample-webapp";
+
 
     private BlobServiceClient createBlobStorageClient(){
         BlobServiceClient blobStorageClient = new BlobServiceClientBuilder()
