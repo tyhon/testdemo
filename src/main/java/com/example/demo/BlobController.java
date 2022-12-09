@@ -36,7 +36,7 @@ public class BlobController {
 
     private BlobServiceClient createBlobStorageClient(){
         BlobServiceClient blobStorageClient = new BlobServiceClientBuilder()
-                .endpoint("https://secondtried.blob.core.windows.net/")
+                .endpoint("https://demostrcl.blob.core.windows.net/")
                 .credential(new ManagedIdentityCredentialBuilder().build())
                 .buildClient();
         return blobStorageClient;
