@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    azure:
+      storage:
+        blob:
+          account-name: readstdemo
+          account-key: We26MbpVw3SLgUV4ao7Z8BQk84XFeQO6NrvgGhz0RmiNQXlyztk37mFITf0rJpOG8RxsLs3ilbzA+AStPx7CKw==
+          endpoint: https://readstdemo.blob.core.windows.net/sample-webapp
