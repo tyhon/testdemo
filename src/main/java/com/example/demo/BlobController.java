@@ -57,8 +57,6 @@ public class BlobController {
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public String getDelegateList() throws IOException {
-//        ManagedIdentityCredential managedIdentityCredential = new ManagedIdentityCredentialBuilder()
-//                .clientId("1ac684a9-00fa-4776-b124-28dcbdc3250c").build();
 //        BlobServiceClient blobStorageClient = new BlobServiceClientBuilder()
 //                .endpoint("https://secondtried.blob.core.windows.net/")
 //                .credential(managedIdentityCredential)
