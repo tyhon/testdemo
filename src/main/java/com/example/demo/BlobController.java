@@ -110,6 +110,7 @@ public class BlobController {
 //        BlobClient blobClient = containerClient.getBlobClient("delegate.json");
             InputStream inputStream = blobClient.openInputStream();
             String result = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
+            System.out.println(result);
             ObjectMapper mapper = new ObjectMapper();
             List<Delegate> delegateList = new ArrayList<>();
             delegateList = mapper.readValue(result, new TypeReference<List<Delegate>>() {});
