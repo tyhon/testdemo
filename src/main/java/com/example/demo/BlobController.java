@@ -1,5 +1,8 @@
 package com.example.demo;
 
+import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.azure.storage.blob.BlobServiceClient;
+import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,9 +25,19 @@ public class BlobController {
 
     @Value("azure-blob://sample-webapp/delegate.json")
     private Resource blobFile;
+//    String fileName = "delegate.json";
+//    String container = "sample-webapp";
+
+    public void createBlobStorageClient(){
+        BlobServiceClient blobStorageClient = new BlobServiceClientBuilder()
+                .endpoint("https://secondtried.blob.core.windows.net/")
+                .credential(new DefaultAzureCredentialBuilder().build())
+                .buildClient();
+    }
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public String getDelegateList() throws IOException {
+        createBlobStorageClient();
         return StreamUtils.copyToString(
                 this.blobFile.getInputStream(),
                 Charset.forName("UTF-8"));
