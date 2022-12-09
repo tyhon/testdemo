@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.azure.core.util.BinaryData;
 import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.identity.ManagedIdentityCredential;
 import com.azure.identity.ManagedIdentityCredentialBuilder;
@@ -13,6 +14,7 @@ import com.azure.storage.blob.BlobServiceClientBuilder;
 //import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.core.io.Resource;
 //import org.springframework.core.io.WritableResource;
+import com.azure.storage.blob.specialized.BlockBlobClient;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -83,23 +85,28 @@ public class BlobController {
         return StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
     }
 
-//    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public String addDelegate(@RequestBody Delegate delegate) throws IOException {
+    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String addDelegate(@RequestBody Delegate delegate) throws IOException {
+        BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
+        BlobClient blobClient = containerClient.getBlobClient("delegate.json");
+        InputStream inputStream = blobClient.openInputStream();
 //        try (OutputStream os = ((WritableResource) this.blobFile).getOutputStream()) {
-//            String result = StreamUtils.copyToString(this.blobFile.getInputStream(), Charset.forName("UTF-8"));
-//            ObjectMapper mapper = new ObjectMapper();
-////            if (!result.isEmpty()){
-//            List<Delegate> delegateList = new ArrayList<>();
-//            delegateList = mapper.readValue(result, new TypeReference<List<Delegate>>() {});
-//            List<Integer> allIds = delegateList.stream().map(item -> item.getId()).collect(Collectors.toList());
-//            delegate.setId(allIds.get(allIds.size()-1)+1);
-//            delegateList.add(delegate);
-//            String jsonString = mapper.writeValueAsString(delegateList);
-//            os.write(jsonString.getBytes());}
-////        }
-//        return "file was updated";
-//    }
-//
+            String result = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
+            ObjectMapper mapper = new ObjectMapper();
+//            if (!result.isEmpty()){
+            List<Delegate> delegateList = new ArrayList<>();
+            delegateList = mapper.readValue(result, new TypeReference<List<Delegate>>() {});
+            List<Integer> allIds = delegateList.stream().map(item -> item.getId()).collect(Collectors.toList());
+            delegate.setId(allIds.get(allIds.size()-1)+1);
+            delegateList.add(delegate);
+            String jsonString = mapper.writeValueAsString(delegateList);
+            blobClient.upload(BinaryData.fromString(jsonString));
+//            os.write(jsonString.getBytes());
+//        }
+
+        return "file was updated";
+    }
+
     @DeleteMapping("/delete/{id}")
     public String deleteDelegate(@PathVariable("id") Integer id) throws IOException{
         BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
