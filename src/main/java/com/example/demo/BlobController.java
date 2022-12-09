@@ -91,8 +91,9 @@ public class BlobController {
         BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
         BlobClient blobClient = containerClient.getBlobClient("delegate.json");
         InputStream inputStream = blobClient.openInputStream();
-//        try (OutputStream os = ((WritableResource) this.blobFile).getOutputStream()) {
-            String result = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
+        String result = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
+        System.out.println(result);
+        try (BlobOutputStream blobOS = blobClient.getBlockBlobClient().getBlobOutputStream()) {
             ObjectMapper mapper = new ObjectMapper();
 //            if (!result.isEmpty()){
             List<Delegate> delegateList = new ArrayList<>();
@@ -101,9 +102,9 @@ public class BlobController {
             delegate.setId(allIds.get(allIds.size()-1)+1);
             delegateList.add(delegate);
             String jsonString = mapper.writeValueAsString(delegateList);
-            blobClient.upload(BinaryData.fromString(jsonString));
-//            os.write(jsonString.getBytes());
-//        }
+//            blobClient.upload(BinaryData.fromString(jsonString));
+            blobOS.write(jsonString.getBytes());
+        }
 
         return "file was updated";
     }
