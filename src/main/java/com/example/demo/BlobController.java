@@ -33,7 +33,6 @@ public class BlobController {
 //    @Value("azure-blob://sample-webapp/delegate.json")
 //    private Resource blobFile;
 
-
     private BlobServiceClient createBlobStorageClient(){
         BlobServiceClient blobStorageClient = new BlobServiceClientBuilder()
                 .endpoint("https://demostrcl.blob.core.windows.net/")
