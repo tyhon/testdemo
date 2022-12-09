@@ -3,6 +3,6 @@ spring:
     azure:
       storage:
         blob:
-          account-name: readstdemo
+          account-name: secondtried
           account-key: M+86f+zNPXabBp358bsyGuVDbEYMe2QrB4WKF/54wI68G3XrqwENHT6CuXXGx/zmj9iRDWRYjmgS+AStPdtW8g==
           endpoint: https://secondtried.blob.core.windows.net/
