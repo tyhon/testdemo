@@ -43,12 +43,12 @@ import java.util.stream.Collectors;
 @RequestMapping("blob")
 public class BlobController {
 
-    @Value("azure-blob://sample-webapp/delegate.json")
-    private Resource blobFile;
+//    @Value("azure-blob://sample-webapp/delegate.json")
+//    private Resource blobFile;
 
     private BlobServiceClient createBlobStorageClient(){
         BlobServiceClient blobStorageClient = new BlobServiceClientBuilder()
-                .endpoint("https://secondtried.blob.core.windows.net/")
+                .endpoint("https://democl.blob.core.windows.net/")
                 .credential(new ManagedIdentityCredentialBuilder().build())
                 .buildClient();
         return blobStorageClient;
