@@ -49,5 +49,5 @@ jobs:
         with:
           app-name: 'storage-api'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E53E95ED4F134CA3890AA6DB2BBFD602 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BA36555F9C134972BF408CE31C2B2ED5 }}
           package: '*.jar'
