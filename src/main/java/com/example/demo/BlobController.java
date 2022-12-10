@@ -101,7 +101,6 @@ public class BlobController {
         delegate.setId(allIds.get(allIds.size()-1)+1);
         delegateList.add(delegate);
         String jsonString = mapper.writeValueAsString(delegateList);
-        BlobOutputStream blobOS = blobClient.getBlockBlobClient().getBlobOutputStream();
 
         try (ByteArrayInputStream dataStream = new ByteArrayInputStream(jsonString.getBytes())) {
 //            ObjectMapper mapper = new ObjectMapper();
