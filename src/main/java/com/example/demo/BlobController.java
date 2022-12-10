@@ -25,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 //import java.io.InputStreamReader;
@@ -92,18 +93,27 @@ public class BlobController {
         BlobClient blobClient = containerClient.getBlobClient("delegate.json");
         InputStream inputStream = blobClient.openInputStream();
         String result = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
-        System.out.println(result);
-        try (BlobOutputStream blobOS = blobClient.getBlockBlobClient().getBlobOutputStream()) {
-            ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
 //            if (!result.isEmpty()){
-            List<Delegate> delegateList = new ArrayList<>();
-            delegateList = mapper.readValue(result, new TypeReference<List<Delegate>>() {});
-            List<Integer> allIds = delegateList.stream().map(item -> item.getId()).collect(Collectors.toList());
-            delegate.setId(allIds.get(allIds.size()-1)+1);
-            delegateList.add(delegate);
-            String jsonString = mapper.writeValueAsString(delegateList);
+        List<Delegate> delegateList = new ArrayList<>();
+        delegateList = mapper.readValue(result, new TypeReference<List<Delegate>>() {});
+        List<Integer> allIds = delegateList.stream().map(item -> item.getId()).collect(Collectors.toList());
+        delegate.setId(allIds.get(allIds.size()-1)+1);
+        delegateList.add(delegate);
+        String jsonString = mapper.writeValueAsString(delegateList);
+        BlobOutputStream blobOS = blobClient.getBlockBlobClient().getBlobOutputStream();
+
+        try (ByteArrayInputStream dataStream = new ByteArrayInputStream(jsonString.getBytes())) {
+//            ObjectMapper mapper = new ObjectMapper();
+////            if (!result.isEmpty()){
+//            List<Delegate> delegateList = new ArrayList<>();
+//            delegateList = mapper.readValue(result, new TypeReference<List<Delegate>>() {});
+//            List<Integer> allIds = delegateList.stream().map(item -> item.getId()).collect(Collectors.toList());
+//            delegate.setId(allIds.get(allIds.size()-1)+1);
+//            delegateList.add(delegate);
+//            String jsonString = mapper.writeValueAsString(delegateList);
 //            blobClient.upload(BinaryData.fromString(jsonString));
-            blobOS.write(jsonString.getBytes());
+            blobClient.upload(dataStream, jsonString.length(), true /* overwrite */);
         }
 
         return "file was updated";
@@ -113,25 +123,32 @@ public class BlobController {
     public String deleteDelegate(@PathVariable("id") Integer id) throws IOException{
         BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
         BlobClient blobClient = containerClient.getBlobClient("delegate.json");
-
-        try (BlobOutputStream blobOS = blobClient.getBlockBlobClient().getBlobOutputStream()) {
+        InputStream inputStream = blobClient.openInputStream();
+        String result = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
+        System.out.println(result);
+        ObjectMapper mapper = new ObjectMapper();
+        List<Delegate> delegateList = new ArrayList<>();
+        delegateList = mapper.readValue(result, new TypeReference<List<Delegate>>() {});
+        List<Integer> allIds = delegateList.stream().map(delegate -> delegate.getId()).collect(Collectors.toList());
+        String jsonString;
+        if (allIds.contains(id)) {
+            delegateList.removeIf(delegate -> delegate.getId().equals(id));
+            jsonString = mapper.writeValueAsString(delegateList);
+        } else {
+            jsonString = mapper.writeValueAsString(delegateList);
+        }
+//        try (BlobOutputStream blobOS = blobClient.getBlockBlobClient().getBlobOutputStream()) {
 //            BlobContainerClient containerClient = createBlobStorageClient().getBlobContainerClient("sample-webapp");
 //        BlobClient blobClient = containerClient.getBlobClient("delegate.json");
-            InputStream inputStream = blobClient.openInputStream();
-            String result = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
-            System.out.println(result);
-            ObjectMapper mapper = new ObjectMapper();
-            List<Delegate> delegateList = new ArrayList<>();
-            delegateList = mapper.readValue(result, new TypeReference<List<Delegate>>() {});
-            List<Integer> allIds = delegateList.stream().map(delegate -> delegate.getId()).collect(Collectors.toList());
+        try (ByteArrayInputStream dataStream = new ByteArrayInputStream(jsonString.getBytes())) {
             if (allIds.contains(id)) {
-                delegateList.removeIf(delegate -> delegate.getId().equals(id));
-                String jsonString = mapper.writeValueAsString(delegateList);
-                blobOS.write(jsonString.getBytes());
+//                delegateList.removeIf(delegate -> delegate.getId().equals(id));
+//                String jsonString = mapper.writeValueAsString(delegateList);
+                blobClient.upload(dataStream, jsonString.length(), true /* overwrite */);
                 return "delete successfully";
             } else {
-                String jsonString = mapper.writeValueAsString(delegateList);
-                blobOS.write(jsonString.getBytes());
+//                String jsonString = mapper.writeValueAsString(delegateList);
+                blobClient.upload(dataStream, jsonString.length(), true /* overwrite */);
                 return "this id does not exist";
             }
         }
